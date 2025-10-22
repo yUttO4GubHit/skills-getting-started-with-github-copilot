@@ -41,6 +41,47 @@ activities = {
     }
 }
 
+# ...existing code...
+# Add additional activities
+activities.update({
+    "basketball": {
+        "description": "5-a-side basketball games for all skill levels.",
+        "participants": [],
+        "max_participants": 10,
+        "category": "sports"
+    },
+    "swimming": {
+        "description": "Lap swimming and technique practice at the campus pool.",
+        "participants": [],
+        "max_participants": 12,
+        "category": "sports"
+    },
+    "painting_workshop": {
+        "description": "Beginner-friendly acrylic painting sessions.",
+        "participants": [],
+        "max_participants": 8,
+        "category": "artistic"
+    },
+    "sculpture_class": {
+        "description": "Hands-on clay sculpture projects.",
+        "participants": [],
+        "max_participants": 8,
+        "category": "artistic"
+    },
+    "chess_club": {
+        "description": "Weekly chess practice and friendly tournaments.",
+        "participants": [],
+        "max_participants": 16,
+        "category": "intellectual"
+    },
+    "debate_club": {
+        "description": "Meetups to practice public speaking and structured debates.",
+        "participants": [],
+        "max_participants": 20,
+        "category": "intellectual"
+    }
+})
+# ...existing code...
 
 @app.get("/")
 def root():
@@ -61,6 +102,14 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Get the specific activity
     activity = activities[activity_name]
+
+    # Prevent duplicate signups
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Student already signed up for this activity")
+    
+    # Prevent over-capacity
+    if len(activity["participants"]) >= activity["max_participants"]:
+        raise HTTPException(status_code=400, detail="Activity is at full capacity") 
 
     # Add student
     activity["participants"].append(email)
